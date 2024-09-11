@@ -1,0 +1,21 @@
+#define irSensorPin 8
+#define ledPin 9
+
+void setup() {
+  pinMode(irSensorPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  // Check if IR sensor detects a vehicle
+  if (digitalRead(irSensorPin) == LOW) {
+    // Turn on LED to transmit "slow down" message
+    digitalWrite(ledPin, HIGH);
+    delay(5000); // LED stays on for 5 seconds
+    digitalWrite(ledPin, LOW); // Turn off LED
+  }
+  else {
+    // Turn off LED if IR sensor does not detect a vehicle
+    digitalWrite(ledPin, LOW);
+  }
+}
