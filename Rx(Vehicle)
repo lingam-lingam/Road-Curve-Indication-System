@@ -1,0 +1,30 @@
+const int ldrPin = A0; // LDR connected to analog pin A0
+const int threshold = 500; // Threshold for detecting light (adjust based on environment)
+const int bitsPerByte = 8; // 8 bits in a byte
+unsigned long blinkDelay = 200; // Delay to sync with the sending side
+
+void setup() {
+  Serial.begin(9600); // Start serial communication to send data to laptop
+  pinMode(ldrPin, INPUT); // Set LDR pin as input
+  Serial.println("Ready to decode and send data...");
+}
+
+void loop() {
+  byte receivedByte = 0; // To store the reconstructed byte
+
+  for (int i = 7; i >= 0; i--) { // Loop over 8 bits (one byte)
+    int ldrValue = analogRead(ldrPin); // Read LDR value
+
+    // Determine if it's a '1' or '0' based on threshold
+    if (ldrValue > threshold) {
+      receivedByte |= (1 << i); // Set the bit to 1
+    } else {
+      receivedByte &= ~(1 << i); // Set the bit to 0
+    }
+
+    delay(blinkDelay); // Wait for the next bit (match sender's delay)
+  }
+
+  // Send the decoded byte to the computer
+  Serial.write(receivedByte); // Send reconstructed byte over serial
+}
